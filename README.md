@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 gen-readme
+# 🚀 docsage
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://www.npmjs.com/package/gen-readme)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -43,31 +43,31 @@
 ### 📥 Installation
 
 ```bash
-npm install -g gen-readme
+npm install -g docsage
 ```
 
 ### Usage
 
 ```bash
-gen-readme [path]
+docsage [path]
 ```
 
 **Example:**
 
 ```bash
-gen-readme ./my-project
+docsage ./my-project
 ```
 
 or
 
 ```bash
-gen-readme # This will scan the current directory
+docsage # This will scan the current directory
 ```
 
 ### Interactive Mode
 
 ```bash
-gen-readme -i
+docsage -i
 ```
 
 ### Advanced Options
