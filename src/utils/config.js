@@ -1,5 +1,5 @@
 export const CONFIG = {
-  API_KEY: 'AIzaSyCHLQZMZAGidlbTnTIZKQfoTTNna8wHSIA',
+  // API_KEY: 'AIzaSyCHLQZMZAGidlbTnTIZKQfoTTNna8wHSIA',
   MODEL_NAME: 'gemini-pro',
   MAX_RETRIES: 2,
   options: {
