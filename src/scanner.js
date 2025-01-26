@@ -31,7 +31,8 @@ export async function scanFiles(baseDir) {
     const priorityPaths = await fg(PRIORITY_FILES, {
       cwd: baseDir,
       ignore: IGNORE_PATTERNS,
-      dot: true
+      dot: true,
+      absolute: true
     });
 
     // Then get other relevant code files
@@ -46,12 +47,13 @@ export async function scanFiles(baseDir) {
     const files = await Promise.all(
       allPaths.map(async (filePath) => {
         try {
-          const fullPath = path.join(baseDir, filePath);
+          const fullPath = path.resolve(baseDir, filePath);
           const content = await fs.readFile(fullPath, 'utf-8');
+          const relativePath = path.relative(baseDir, fullPath);
           return {
-            path: filePath,
+            path: relativePath,
             content: truncateContent(content),
-            type: path.extname(filePath).slice(1)
+            type: path.extname(filePath).slice(1) || 'txt'
           };
         } catch (error) {
           logger.warn(`Failed to read file ${filePath}: ${error.message}`);
@@ -66,7 +68,9 @@ export async function scanFiles(baseDir) {
   }
 }
 
-function truncateContent(content, maxLength = 1000) {
+function truncateContent(content, maxLength = 5000) {
+  if (!content) return '';
+  content = content.trim();
   if (content.length <= maxLength) return content;
   return content.slice(0, maxLength) + '\n... (content truncated)';
 } 

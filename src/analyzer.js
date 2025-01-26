@@ -36,20 +36,25 @@ export async function analyzeCodebase(files) {
 }
 
 function extractProjectInfo(files) {
-  const packageJson = files.find(f => f.path === 'package.json');
-  if (!packageJson) return {};
+  const packageJson = files.find(f => f.path.toLowerCase() === 'package.json');
+  if (!packageJson) {
+    logger.warn('package.json not found');
+    return {};
+  }
 
   try {
-    const pkg = JSON.parse(packageJson.content);
+    const pkg = JSON.parse(packageJson.content.trim());
     return {
-      name: pkg.name,
-      version: pkg.version,
-      description: pkg.description,
+      name: pkg.name || '',
+      version: pkg.version || '1.0.0',
+      description: pkg.description || '',
+      author: pkg.author || '',
+      license: pkg.license || 'MIT',
       dependencies: pkg.dependencies || {},
       devDependencies: pkg.devDependencies || {}
     };
   } catch (error) {
-    logger.warn('Failed to parse package.json');
+    logger.warn(`Failed to parse package.json: ${error.message}`);
     return {};
   }
 }

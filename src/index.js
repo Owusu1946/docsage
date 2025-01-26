@@ -1,21 +1,18 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import dotenv from 'dotenv';
 import inquirer from 'inquirer';
 import { analyzeCodebase } from './analyzer.js';
 import { generateReadme } from './generator.js';
 import { scanFiles } from './scanner.js';
 import { ui } from './utils/ui.js';
 
-dotenv.config();
-
 const program = new Command();
 
 program
   .name('docsage')
   .description('AI-powered documentation generator using Google Gemini')
-  .version('1.1.0')
+  .version('1.2.1')
   .option('-c, --codebase [path]', 'Path to codebase', '.')
   .option('-f, --force', 'Force overwrite existing README.md')
   .option('-m, --merge', 'Merge with existing README.md')
