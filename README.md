@@ -1,67 +1,154 @@
-## Docsage
+<div align="center">
+
+# 🚀 docsage
+
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://www.npmjs.com/package/gen-readme)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D16-brightgreen.svg)](https://nodejs.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+> AI-powered README generator
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/25349495/212863234-7a75e2ba-580b-4f61-80a8-27649390461c.png" alt="Docsage Logo" width="300" height="300" />
+  <img src="https://raw.githubusercontent.com/your-org/gen-readme/main/assets/demo.gif" alt="gen-readme demo" width="600">
 </p>
 
-Docsage is an AI-powered documentation generator that leverages Google Gemini to swiftly and effortlessly craft sophisticated documentation.
+[Key Features](#-key-features) •
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Documentation](#-documentation) •
+[Contributing](#-contributing)
 
-### Installation
+</div>
 
-1. Clone the repository.
-```sh
-git clone https://github.com/Okenneth1964/docsage.git
+## ✨ Key Features
+
+- 🤖 **AI-Powered Analysis** - Leverages Google's Gemini model for intelligent code analysis
+- 📝 **Smart Generation** - Creates comprehensive README files with all essential sections
+- 🔍 **Code Structure Detection** - Automatically detects and documents project structure
+- 📊 **Dependency Analysis** - Parses and categorizes project dependencies
+- 📈 **Mermaid Diagrams** - Generates architecture and flow diagrams automatically
+- 🎨 **Beautiful CLI** - Interactive command-line interface with colorful output
+- 🔄 **Merge Support** - Smart merging with existing README files
+- ⚡ **Fast & Efficient** - Optimized file scanning and processing
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js >= 16
+- npm or yarn
+- Google Gemini API key
+
+### 📥 Installation
+
+```bash
+npm install -g docsage
 ```
 
-2. Install the dependencies.
-```sh
-npm install
+### Usage
+
+```bash
+docsage [path]
 ```
 
-### Quick Setup
+**Example:**
 
-1. Create a `.env` file from the `.env.example` file in the root directory and fill in your Google Cloud Platform credentials.
+```bash
+docsage ./my-project
+```
 
-2. Run `npm start` to start the Docsage command-line interface (CLI).
+or
+
+```bash
+docsage # This will scan the current directory
+```
+
+### Interactive Mode
+
+```bash
+docsage -i
+```
+
+### Advanced Options
+
+| Option | Description |
+|--------|-------------|
+| `-c, --codebase` | Specify codebase path |
+| `-f, --force` | Force overwrite existing README |
+| `-m, --merge` | Merge with existing README |
+| `-i, --interactive` | Interactive mode |
+
+## 📖 Documentation
+
+### CLI Architecture
+
+```mermaid
+graph TD
+A[CLI Entry] --> B{Parse Options}
+B --> C[Interactive Mode]
+B --> D[Direct Mode]
+C --> E[File Scanner]
+D --> E
+E --> F[Code Analyzer]
+F --> G[README Generator]
+G --> H{Existing README?}
+H -->|Yes| I[Merge Content]
+H -->|No| J[Write New File]
+```
 
 ### Features
 
-- **Google Gemini Integration:** Seamlessly generates documentation utilizing powerful language models like Gemini.
-- **Code Scanning and Analysis:** Thoroughly scans codebases, extracting essential information for documentation.
-- **Automated Documentation Generation:** Intelligently generates comprehensive and structured documentation based on code analysis.
-- **File Format Support:** Supports generation of documentation in various file formats, including Markdown, HTML, and PDF.
-- **Template Customization:** Provides customizable templates to tailor the appearance and content of your documentation.
+- AI-powered code analysis
+- Automatic generation of detailed README.md files
+- Support for code structure detection and dependency parsing
+- Integration with Mermaid for diagram generation
+- Customizable templates
 
-### API Documentation
 
-Docsage does not have an external API.
 
 ### Dependencies
 
-**Runtime Dependencies**
-- `@google/generative-ai` - Google Gemini client library
-- `commander` - Command-line interface framework
-- `dotenv` - Environment variables parser
-- `fast-glob` - File globbing library
-- `ora` - CLI spinner
-- `chalk` - Terminal styling library
-- `mermaid` - Graph visualization library
-- `badge-maker` - Badge creation library
-- `gradient-string` - Colorful string rendering library
-- `boxen` - Box drawing library
-- `figlet` - ASCII art generation library
-- `nanospinner` - CLI progress spinner
-- `cli-progress` - CLI progress bar
-- `inquirer` - CLI prompt library
+**Runtime:**
 
-**Development Dependencies**
-- `esbuild` - JavaScript bundler
-- `jest` - Testing framework
+- [@google/generative-ai](https://www.npmjs.com/package/@google/generative-ai)
+- [commander](https://www.npmjs.com/package/commander)
+- [dotenv](https://www.npmjs.com/package/dotenv)
+- [fast-glob](https://www.npmjs.com/package/fast-glob)
+- [ora](https://www.npmjs.com/package/ora)
+- [chalk](https://www.npmjs.com/package/chalk)
+- [mermaid](https://www.npmjs.com/package/mermaid)
+- [badge-maker](https://www.npmjs.com/package/badge-maker)
+
+### Contributing
+-Fork the repo
+-Create a new branch
+-Make your changes
+-Commit your changes
+-Push your changes
+-Create a pull request
+
+Contributions are welcome! Please read the [contributing guidelines](https://github.com/your-org/gen-readme/blob/main/CONTRIBUTING.md) before submitting a pull request.
+
+**Development:**
+
+- [esbuild](https://www.npmjs.com/package/esbuild)
+- [jest](https://www.npmjs.com/package/jest)
 
 ### License
 
-Docsage is licensed under the [MIT License](LICENSE).
+MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Contributing
+## 🙏 Acknowledgments
+- Google Gemini for AI capabilities
+- Osei Ansah
+- Expo Ghana Community
+- Samuel Agbenyo
+- All our [contributors](https://github.com/your-org/gen-readme/graphs/contributors)
 
-Contributions to Docsage are welcome! Please follow the [contributing guidelines](CONTRIBUTING.md) to contribute to the project.
+<div align="center">
+
+Made with ❤️ by [@Okenneth1964](https://github.com/Okenneth1964)
+
+</div>
