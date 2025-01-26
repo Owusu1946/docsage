@@ -82,7 +82,8 @@ gen-readme -i
 ## 📖 Documentation
 
 ### CLI Architecture
-mermaid
+
+```mermaid
 graph TD
 A[CLI Entry] --> B{Parse Options}
 B --> C[Interactive Mode]
