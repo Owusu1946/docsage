@@ -28,7 +28,24 @@ Examples:
   .action(async (options) => {
     try {
       await ui.showWelcome();
-
+  
+      // Always prompt for API key first
+      const apiKeyResponse = await inquirer.prompt([
+        {
+          type: 'password',
+          name: 'apiKey',
+          message: '🔑 Please enter your Gemini API key:',
+          validate: (input) => {
+            if (!input) return 'API key is required';
+            return true;
+          }
+        }
+      ]);
+  
+      let codebasePath = options.codebase;
+      let force = options.force;
+      let merge = options.merge;
+  
       if (options.interactive) {
         const answers = await inquirer.prompt([
           {
@@ -51,45 +68,31 @@ Examples:
             when: (answers) => !answers.force,
           },
         ]);
-        Object.assign(options, answers);
+        codebasePath = answers.codebase;
+        force = answers.force;
+        merge = answers.merge;
       }
-
+  
       const spinner = ui.createSpinner('🔍 Scanning codebase...');
-      const files = await scanFiles(options.codebase);
+      const files = await scanFiles(codebasePath);
       
       if (files.length === 0) {
         spinner.fail('No relevant files found in codebase');
         process.exit(1);
       }
-
-      ui.showStats({
-        'Files Scanned': files.length,
-        'Priority Files': files.filter(f => f.path.includes('package.json')).length,
-        'Code Files': files.filter(f => /\.(js|ts|jsx|tsx)$/.test(f.path)).length,
-      });
-
-      spinner.update('🤖 Analyzing code...');
-      const analysis = await analyzeCodebase(files);
-
-      spinner.update('📝 Generating README...');
-      await generateReadme(analysis, {
-        force: options.force,
-        merge: options.merge
-      });
-
-      spinner.succeed('README.md generated successfully!');
-      
-      ui.showSuccess(
-        '🎉 README.md has been generated!\n\n' +
-        `📊 Stats:\n` +
-        `   • Files analyzed: ${files.length}\n` +
-        `   • Sections generated: ${analysis.analysis.split('\n').filter(l => l.startsWith('#')).length}\n` +
-        `   • Generated at: ${new Date().toLocaleString()}`
-      );
+      spinner.succeed('Codebase scanned successfully');
+  
+      spinner.start('🤖 Analyzing codebase...');
+      const analysis = await analyzeCodebase(files, apiKeyResponse.apiKey);
+      spinner.succeed('Analysis complete');
+  
+      spinner.start('📝 Generating README...');
+      await generateReadme(analysis, { force, merge });
+      spinner.succeed('✨ README generated successfully!');
+  
     } catch (error) {
-      ui.showError(error);
+      logger.error('Failed to generate documentation', error.message);
       process.exit(1);
     }
   });
-
 program.parse(); 

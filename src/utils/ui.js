@@ -23,7 +23,7 @@ export const ui = {
     console.log(gradient.pastel.multiline(title));
     console.log(boxen(
       chalk.blue('🚀 AI-Powered Documentation Generator\n') +
-      chalk.dim('Made with ❤️ by @Okenneth1964'),
+      chalk.dim('Made with ❤️ by @Okenneth1964 and @OseiAnsah'),
       {
         padding: 1,
         margin: 1,
