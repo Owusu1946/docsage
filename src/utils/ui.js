@@ -11,7 +11,7 @@ export const ui = {
   async showWelcome() {
     console.clear();
     const title = await new Promise((resolve) => {
-      figlet('gen-readme', {
+      figlet('docsage', {
         font: 'Big',
         horizontalLayout: 'default',
         verticalLayout: 'default',
@@ -22,7 +22,7 @@ export const ui = {
 
     console.log(gradient.pastel.multiline(title));
     console.log(boxen(
-      chalk.blue('🚀 AI-Powered README Generator\n') +
+      chalk.blue('🚀 AI-Powered Documentation Generator\n') +
       chalk.dim('Made with ❤️ by @Okenneth1964'),
       {
         padding: 1,

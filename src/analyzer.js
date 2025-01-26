@@ -1,19 +1,17 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { logger } from './utils/logger.js';
-
-const MODEL_NAME = 'gemini-pro';
-const MAX_RETRIES = 2;
+import { CONFIG } from './utils/config.js';
 
 export async function analyzeCodebase(files) {
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+  const genAI = new GoogleGenerativeAI(CONFIG.API_KEY);
+  const model = genAI.getGenerativeModel({ model: CONFIG.MODEL_NAME });
 
   const projectInfo = extractProjectInfo(files);
   const codeContext = prepareCodeContext(files);
 
   const prompt = generateAnalysisPrompt(projectInfo, codeContext);
   
-  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+  for (let attempt = 1; attempt <= CONFIG.MAX_RETRIES; attempt++) {
     try {
       const result = await model.generateContent(prompt);
       const response = await result.response;
@@ -29,8 +27,8 @@ export async function analyzeCodebase(files) {
         timestamp: new Date().toISOString()
       };
     } catch (error) {
-      if (attempt === MAX_RETRIES) {
-        throw new Error(`Failed to analyze code after ${MAX_RETRIES} attempts: ${error.message}`);
+      if (attempt === CONFIG.MAX_RETRIES) {
+        throw new Error(`Failed to analyze code after ${CONFIG.MAX_RETRIES} attempts: ${error.message}`);
       }
       logger.warn(`Analysis attempt ${attempt} failed, retrying...`);
     }

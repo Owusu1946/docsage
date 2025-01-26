@@ -1,18 +1,18 @@
 {
-  "name": "gen-readme",
-  "version": "1.0.0",
-  "description": "AI-powered README generator using Google Gemini",
-  "main": "src/index.js",
+  "name": "docsage",
+  "version": "1.1.0",
+  "description": "AI-powered documentation generator using Google Gemini",
+  "main": "dist/index.js",
   "bin": {
-    "gen-readme": "./src/index.js"
+    "docsage": "./src/index.js"
   },
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
     "test": "jest",
-    "build": "esbuild src/index.js --bundle --platform=node --outfile=dist/index.js",
+    "build": "esbuild src/index.js --bundle --platform=node --format=esm --outfile=dist/index.js",
     "prepublishOnly": "npm run build",
-    "postinstall": "node -e \"console.log('\\x1b[36m' + '🎉 Thanks for installing gen-readme! Get your API key from https://makersuite.google.com/app/apikey' + '\\x1b[0m')\""
+    "postinstall": "node -e \"console.log('\\x1b[36m' + '🎉 Thanks for installing docsage! Run docsage --help to get started.' + '\\x1b[0m')\""
   },
   "files": [
     "dist",
@@ -25,12 +25,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Okenneth1964/gen-readme.git"
+    "url": "git+https://github.com/Owusu1964/docsage.git"
   },
   "bugs": {
-    "url": "https://github.com/Okenneth1964/gen-readme/issues"
+    "url": "https://github.com/Owusu1964/docsage/issues"
   },
-  "homepage": "https://github.com/Okenneth1964/gen-readme#readme",
+  "homepage": "https://github.com/Owusu1964/docsage#readme",
   "keywords": [
     "readme",
     "generator",

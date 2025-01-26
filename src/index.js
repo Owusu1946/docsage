@@ -13,29 +13,24 @@ dotenv.config();
 const program = new Command();
 
 program
-  .name('gen-readme')
-  .description('AI-powered README generator')
-  .version('1.0.0')
+  .name('docsage')
+  .description('AI-powered documentation generator using Google Gemini')
+  .version('1.1.0')
   .option('-c, --codebase [path]', 'Path to codebase', '.')
   .option('-f, --force', 'Force overwrite existing README.md')
   .option('-m, --merge', 'Merge with existing README.md')
   .option('-i, --interactive', 'Interactive mode')
   .addHelpText('after', `
 Examples:
-  $ gen-readme                    # Generate README for current directory
-  $ gen-readme --codebase ./path  # Generate README for specific path
-  $ gen-readme -i                # Interactive mode
-  $ gen-readme --force           # Overwrite existing README
-  $ gen-readme --merge           # Merge with existing README
+  $ docsage                    # Generate README for current directory
+  $ docsage --codebase ./path  # Generate README for specific path
+  $ docsage -i                # Interactive mode
+  $ docsage --force           # Overwrite existing README
+  $ docsage --merge           # Merge with existing README
   `)
   .action(async (options) => {
     try {
       await ui.showWelcome();
-
-      if (!process.env.GEMINI_API_KEY) {
-        ui.showError(new Error('Missing GEMINI_API_KEY. Please set it in your .env file'));
-        process.exit(1);
-      }
 
       if (options.interactive) {
         const answers = await inquirer.prompt([
