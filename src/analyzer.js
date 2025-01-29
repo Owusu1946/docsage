@@ -2,8 +2,12 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { logger } from './utils/logger.js';
 import { CONFIG } from './utils/config.js';
 
-export async function analyzeCodebase(files) {
-  const genAI = new GoogleGenerativeAI(CONFIG.API_KEY);
+export async function analyzeCodebase(files, apiKey) {
+  if (!apiKey) {
+    throw new Error('API key is required');
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: CONFIG.MODEL_NAME });
 
   const projectInfo = extractProjectInfo(files);

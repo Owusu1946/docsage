@@ -26,6 +26,10 @@ export const ui = {
     console.log(boxen(
       chalk.blue.bold('📚 Professional Documentation Generator\n') +
       chalk.gray('Powered by Google Gemini AI'),
+
+      chalk.blue('🚀 AI-Powered Documentation Generator\n') +
+      chalk.dim('Made with ❤️ by @Okenneth1964 and @OseiAnsah'),
+
       {
         padding: { top: 1, bottom: 1, left: 2, right: 2 },
         margin: { top: 1, bottom: 1 },

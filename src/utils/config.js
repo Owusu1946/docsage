@@ -1,6 +1,5 @@
 export const CONFIG = {
-  API_KEY: 'AIzaSyCHLQZMZAGidlbTnTIZKQfoTTNna8wHSIA', // Gemini API Key
-  GITHUB_TOKEN: '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', // Replace with your GitHub token
+  API_KEY: 'AIzaSyCHLQZMZAGidlbTnTIZKQfoTTNna8wHSIA',
   MODEL_NAME: 'gemini-pro',
   MAX_RETRIES: 2,
   options: {

@@ -31,7 +31,24 @@ Examples:
   .action(async (options) => {
     try {
       await ui.showWelcome();
-
+  
+      // Always prompt for API key first
+      const apiKeyResponse = await inquirer.prompt([
+        {
+          type: 'password',
+          name: 'apiKey',
+          message: '🔑 Please enter your Gemini API key:',
+          validate: (input) => {
+            if (!input) return 'API key is required';
+            return true;
+          }
+        }
+      ]);
+  
+      let codebasePath = options.codebase;
+      let force = options.force;
+      let merge = options.merge;
+  
       if (options.interactive) {
         const answers = await inquirer.prompt([
           {
@@ -54,11 +71,13 @@ Examples:
             when: (answers) => !answers.force,
           },
         ]);
-        Object.assign(options, answers);
+        codebasePath = answers.codebase;
+        force = answers.force;
+        merge = answers.merge;
       }
-
+  
       const spinner = ui.createSpinner('🔍 Scanning codebase...');
-      const files = await scanFiles(options.codebase);
+      const files = await scanFiles(codebasePath);
       
       if (files.length === 0) {
         spinner.fail('No relevant files found in codebase');
@@ -82,38 +101,16 @@ Examples:
 
       spinner.succeed('README.md generated successfully!');
       
-      const { addContributing } = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'addContributing',
-          message: '📝 Would you like to generate detailed contribution guidelines?',
-          default: true
-        }
-      ]);
-
-      if (addContributing) {
-        const contribSpinner = ui.createSpinner('Generating contribution guidelines...');
-        try {
-          await generateContributionDocs(analysis.projectInfo);
-          contribSpinner.succeed('Contribution guidelines generated!');
-        } catch (error) {
-          contribSpinner.fail('Failed to generate contribution guidelines');
-          throw error;
-        }
-      }
-
       ui.showSuccess(
         '🎉 README.md has been generated!\n\n' +
         `📊 Stats:\n` +
         `   • Files analyzed: ${files.length}\n` +
         `   • Sections generated: ${analysis.analysis.split('\n').filter(l => l.startsWith('#')).length}\n` +
-        `   • Generated at: ${new Date().toLocaleString()}\n` +
-        (addContributing ? '   • Contribution guidelines added ✨\n' : '')
+        `   • Generated at: ${new Date().toLocaleString()}`
       );
     } catch (error) {
-      ui.showError(error);
+      logger.error('Failed to generate documentation', error.message);
       process.exit(1);
     }
   });
-
 program.parse(); 

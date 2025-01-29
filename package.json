@@ -14,6 +14,14 @@
     "prepublishOnly": "npm run build",
     "postinstall": "node -e \"console.log('\\x1b[36m' + '🎉 Thanks for installing docsage! Run docsage --help to get started.' + '\\x1b[0m')\""
   },
+
+  
+"jest": {
+  "testEnvironment": "node",
+  "transform": {
+    "^.+\\.jsx?$": "babel-jest"
+  }
+},
   "files": [
     "dist",
     "src",
