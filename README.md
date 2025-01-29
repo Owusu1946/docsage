@@ -144,9 +144,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 - Google Gemini for AI capabilities
-- Osei Ansah
-- Expo Ghana Community
-- Samuel Agbenyo
+- [Osei Ansah](https://github.com/PapaDaCodr)
+- [Expo Ghana Community](https://github.com/Sonnysam)
+- [Samuel Agbenyo](https://github.com/Sonnysam)
 - All our [contributors](https://github.com/your-org/gen-readme/graphs/contributors)
 
 <div align="center">
