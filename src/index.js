@@ -7,6 +7,7 @@ import { generateReadme, generateContributionDocs } from './generator.js';
 import { scanFiles } from './scanner.js';
 import { ui } from './utils/ui.js';
 import { CONFIG } from './utils/config.js';
+import { logger } from './utils/logger.js';
 
 const program = new Command();
 
@@ -32,18 +33,26 @@ Examples:
     try {
       await ui.showWelcome();
   
-      // Always prompt for API key first
-      const apiKeyResponse = await inquirer.prompt([
-        {
-          type: 'password',
-          name: 'apiKey',
-          message: '🔑 Please enter your Gemini API key:',
-          validate: (input) => {
-            if (!input) return 'API key is required';
-            return true;
+      // Get API key from env or prompt
+      let apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        const apiKeyResponse = await inquirer.prompt([
+          {
+            type: 'input',
+            name: 'apiKey',
+            message: '🔑 Please enter your Gemini API key:',
+            validate: (input) => {
+              if (!input) return 'API key is required';
+              if (input.length < 10) return 'API key seems too short';
+              return true;
+            },
+            transformer: (input) => {
+              return input ? '*'.repeat(input.length) : '';
+            }
           }
-        }
-      ]);
+        ]);
+        apiKey = apiKeyResponse.apiKey;
+      }
   
       let codebasePath = options.codebase;
       let force = options.force;
@@ -91,25 +100,49 @@ Examples:
       });
 
       spinner.update('🤖 Analyzing code...');
-      const analysis = await analyzeCodebase(files);
+      const analysis = await analyzeCodebase(files, apiKey);
 
       spinner.update('📝 Generating README...');
       await generateReadme(analysis, {
-        force: options.force,
-        merge: options.merge
+        force: options.force || force,
+        merge: options.merge || merge,
+        addContributing: true // Always generate contribution docs
       });
 
-      spinner.succeed('README.md generated successfully!');
+      spinner.succeed('Documentation generated successfully!');
+
+      // Ask about contribution docs
+      const { generateContrib } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'generateContrib',
+          message: '📝 Would you like to generate detailed contribution guidelines?',
+          default: true
+        }
+      ]);
+
+      if (generateContrib) {
+        const contribSpinner = ui.createSpinner('Generating contribution guidelines...');
+        try {
+          await generateContributionDocs(analysis.projectInfo);
+          contribSpinner.succeed('Contribution guidelines generated!');
+        } catch (error) {
+          contribSpinner.fail('Failed to generate contribution guidelines');
+          throw error;
+        }
+      }
       
       ui.showSuccess(
-        '🎉 README.md has been generated!\n\n' +
+        '🎉 Documentation has been generated!\n\n' +
         `📊 Stats:\n` +
         `   • Files analyzed: ${files.length}\n` +
         `   • Sections generated: ${analysis.analysis.split('\n').filter(l => l.startsWith('#')).length}\n` +
-        `   • Generated at: ${new Date().toLocaleString()}`
+        `   • Generated at: ${new Date().toLocaleString()}\n` +
+        (generateContrib ? '   • Contribution guidelines added ✨\n' : '')
       );
     } catch (error) {
-      logger.error('Failed to generate documentation', error.message);
+      ui.showError(error);
+      logger.error('Failed to generate documentation:', error);
       process.exit(1);
     }
   });

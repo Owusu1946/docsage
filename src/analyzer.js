@@ -22,7 +22,7 @@ export async function analyzeCodebase(files, apiKey) {
       const analysis = response.text();
       
       if (!isValidAnalysis(analysis)) {
-        throw new Error('Invalid analysis format');
+        throw new Error('Generated content does not match required format');
       }
       
       return {
@@ -31,10 +31,11 @@ export async function analyzeCodebase(files, apiKey) {
         timestamp: new Date().toISOString()
       };
     } catch (error) {
+      logger.warn(`Analysis attempt ${attempt} failed: ${error.message}`);
       if (attempt === CONFIG.MAX_RETRIES) {
         throw new Error(`Failed to analyze code after ${CONFIG.MAX_RETRIES} attempts: ${error.message}`);
       }
-      logger.warn(`Analysis attempt ${attempt} failed, retrying...`);
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
     }
   }
 }
@@ -166,13 +167,22 @@ chore: Update build tasks
 }
 
 function isValidAnalysis(analysis) {
+  if (!analysis || typeof analysis !== 'string') {
+    return false;
+  }
+
   const requiredSections = [
-    '# ',           // Must have at least one header
-    'Installation', // Must have installation section
-    '```'          // Must have at least one code block
+    '# ',           // Title
+    '## Installation', 
+    '## Usage',
+    '## Features',
+    '## Contributing',
+    '```'           // Code block
   ];
   
-  return requiredSections.every(section => 
+  const sectionCount = requiredSections.filter(section => 
     analysis.includes(section)
-  );
+  ).length;
+
+  return sectionCount >= 4; // At least 4 required sections should be present
 } 
