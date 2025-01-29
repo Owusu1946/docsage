@@ -3,9 +3,10 @@
 import { Command } from 'commander';
 import inquirer from 'inquirer';
 import { analyzeCodebase } from './analyzer.js';
-import { generateReadme } from './generator.js';
+import { generateReadme, generateContributionDocs } from './generator.js';
 import { scanFiles } from './scanner.js';
 import { ui } from './utils/ui.js';
+import { CONFIG } from './utils/config.js';
 
 const program = new Command();
 
@@ -14,9 +15,11 @@ program
   .description('AI-powered documentation generator using Google Gemini')
   .version('1.2.1')
   .option('-c, --codebase [path]', 'Path to codebase', '.')
-  .option('-f, --force', 'Force overwrite existing README.md')
-  .option('-m, --merge', 'Merge with existing README.md')
-  .option('-i, --interactive', 'Interactive mode')
+  .option('-i, --interactive', 'Run in interactive mode')
+  .option('-f, --force', 'Force overwrite existing README')
+  .option('-m, --merge', 'Merge with existing README')
+  .option('-t, --template <type>', 'Documentation template (minimal, detailed, api)', 'detailed')
+  .option('-s, --style <style>', 'Badge style (flat, plastic, social)', 'flat')
   .addHelpText('after', `
 Examples:
   $ docsage                    # Generate README for current directory
@@ -79,12 +82,33 @@ Examples:
 
       spinner.succeed('README.md generated successfully!');
       
+      const { addContributing } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'addContributing',
+          message: '📝 Would you like to generate detailed contribution guidelines?',
+          default: true
+        }
+      ]);
+
+      if (addContributing) {
+        const contribSpinner = ui.createSpinner('Generating contribution guidelines...');
+        try {
+          await generateContributionDocs(analysis.projectInfo);
+          contribSpinner.succeed('Contribution guidelines generated!');
+        } catch (error) {
+          contribSpinner.fail('Failed to generate contribution guidelines');
+          throw error;
+        }
+      }
+
       ui.showSuccess(
         '🎉 README.md has been generated!\n\n' +
         `📊 Stats:\n` +
         `   • Files analyzed: ${files.length}\n` +
         `   • Sections generated: ${analysis.analysis.split('\n').filter(l => l.startsWith('#')).length}\n` +
-        `   • Generated at: ${new Date().toLocaleString()}`
+        `   • Generated at: ${new Date().toLocaleString()}\n` +
+        (addContributing ? '   • Contribution guidelines added ✨\n' : '')
       );
     } catch (error) {
       ui.showError(error);

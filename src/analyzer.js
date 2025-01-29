@@ -79,15 +79,86 @@ ${codeContext.map(file => `${file.path} (${file.type})`).join('\n')}
 Please include:
 1. Project name and description
 2. Installation instructions
-3. Usage examples
-4. Key features
+3. Usage examples with detailed CLI commands
+4. Key features with detailed explanations
 5. API documentation (if applicable)
-6. Dependencies
+6. Dependencies with version requirements
 7. License information
-8. Contributing guidelines
+8. Detailed Contributing Guidelines including:
+   - Development setup
+   - Code style guidelines
+   - Commit message conventions
+   - Pull request process
+   - Bug reporting guidelines
+   - Feature request process
+   - Code review process
+   - Testing requirements
+   - Documentation requirements
+   - Community guidelines
+   - Code of conduct reference
 
 Use appropriate Markdown syntax, emojis, and formatting. Include code blocks where relevant.
-Base all information strictly on the provided code context.`;
+Make the documentation detailed and comprehensive.
+Base all information strictly on the provided code context.
+
+For the contributing section, include this template:
+
+## Contributing 🤝
+
+### Development Setup
+\`\`\`bash
+# Clone the repository
+git clone [repository-url]
+cd [project-name]
+
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Start development server
+npm run dev
+\`\`\`
+
+### Code Style Guidelines
+- Use ESLint and Prettier for code formatting
+- Follow JavaScript Standard Style
+- Use meaningful variable and function names
+- Add JSDoc comments for functions
+- Keep functions small and focused
+
+### Commit Message Convention
+Follow the Conventional Commits specification:
+\`\`\`
+feat: Add new feature
+fix: Fix bug
+docs: Update documentation
+style: Format code
+refactor: Refactor code
+test: Add tests
+chore: Update build tasks
+\`\`\`
+
+### Pull Request Process
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to your fork
+5. Open a Pull Request
+6. Wait for review and address feedback
+
+### Bug Reports
+- Use the issue tracker
+- Include reproduction steps
+- Include system information
+- Include relevant logs
+
+### Feature Requests
+- Use the issue tracker
+- Describe the feature in detail
+- Explain the use case
+- Provide examples if possible`;
 }
 
 function isValidAnalysis(analysis) {
