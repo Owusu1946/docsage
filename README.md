@@ -1,18 +1,51 @@
-# Docsage
+<div align="center">
 
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="90" height="20" role="img" aria-label="version: 1.3.2"><title>version: 1.3.2</title><linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><clipPath id="r"><rect width="90" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#r)"><rect width="51" height="20" fill="#555"/><rect x="51" width="39" height="20" fill="#007ec6"/><rect width="90" height="20" fill="url(#s)"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text aria-hidden="true" x="265" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="410">version</text><text x="265" y="140" transform="scale(.1)" fill="#fff" textLength="410">version</text><text aria-hidden="true" x="695" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="290">1.3.2</text><text x="695" y="140" transform="scale(.1)" fill="#fff" textLength="290">1.3.2</text></g></svg> <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="78" height="20" role="img" aria-label="license: MIT"><title>license: MIT</title><linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><clipPath id="r"><rect width="78" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#r)"><rect width="47" height="20" fill="#555"/><rect x="47" width="31" height="20" fill="#97ca00"/><rect width="78" height="20" fill="url(#s)"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text aria-hidden="true" x="245" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="370">license</text><text x="245" y="140" transform="scale(.1)" fill="#fff" textLength="370">license</text><text aria-hidden="true" x="615" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="210">MIT</text><text x="615" y="140" transform="scale(.1)" fill="#fff" textLength="210">MIT</text></g></svg> <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="82" height="20" role="img" aria-label="node: 22.4.1"><title>node: 22.4.1</title><linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><clipPath id="r"><rect width="82" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#r)"><rect width="37" height="20" fill="#555"/><rect x="37" width="45" height="20" fill="#4c1"/><rect width="82" height="20" fill="url(#s)"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text aria-hidden="true" x="195" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="270">node</text><text x="195" y="140" transform="scale(.1)" fill="#fff" textLength="270">node</text><text aria-hidden="true" x="585" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="350">22.4.1</text><text x="585" y="140" transform="scale(.1)" fill="#fff" textLength="350">22.4.1</text></g></svg>
+# 🚀 docsage
+
+[![Version](https://img.shields.io/badge/version-1.7.1-blue.svg)](https://www.npmjs.com/package/docsage)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D16-brightgreen.svg)](https://nodejs.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![npm](https://img.shields.io/npm/v/docsage)](https://www.npmjs.com/package/docsage)
 
 
-## Project Overview
+> AI-powered README generator
 
-Docsage is a powerful documentation generator that utilizes the cutting-edge generative AI capabilities of Google Gemini. It analyzes and generates comprehensive documentation from various codebases.
 
-## Installation
+[Key Features](#-key-features) •
+[Installation](#-installation) •
+[Usage](#-Usage) •
+[Documentation](#-documentation) •
+[Contributing](#-Contributing)
 
-To install Docsage, simply run:
+</div>
 
-```
-npm i -g docsage
+## ✨ Key Features
+
+- 🤖 **AI-Powered Analysis** - Leverages Google's Gemini model for intelligent code analysis
+- 📝 **Smart Generation** - Creates comprehensive README files with all essential sections
+- 🔍 **Code Structure Detection** - Automatically detects and documents project structure
+- 📊 **Dependency Analysis** - Parses and categorizes project dependencies
+- 📈 **Mermaid Diagrams** - Generates architecture and flow diagrams automatically
+- 🎨 **Beautiful CLI** - Interactive command-line interface with colorful output
+- 🔄 **Merge Support** - Smart merging with existing README files
+- ⚡ **Fast & Efficient** - Optimized file scanning and processing
+- 🔃 **GitHub Integration** - Create pull requests automatically with generated docs
+- 🔐 **Secure** - Environment-based configuration for sensitive tokens
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js >= 16
+- npm or yarn
+- Google Gemini API key
+
+### 📥 Installation
+
+```bash
+npm install -g docsage
 ```
 
 ### Usage
@@ -36,61 +69,89 @@ docsage # This will scan the current directory
 ### Interactive Mode
 
 ```bash
-# Clone the repository
-git clone [repository-url]
-cd [project-name]
-
-# Install dependencies
-npm install
-
-# Run tests
-npm test
-
-# Start development server
-npm run dev
+docsage -i
 ```
 
-### Code Style Guidelines
+### Advanced Options
 
-- Use ESLint and Prettier for code formatting
-- Follow JavaScript Standard Style
-- Use meaningful variable and function names
-- Add JSDoc comments for functions
-- Keep functions small and focused
+| Option | Description |
+|--------|-------------|
+| `-c, --codebase` | Specify codebase path |
+| `-f, --force` | Force overwrite existing README |
+| `-m, --merge` | Merge with existing README |
+| `-i, --interactive` | Interactive mode |
 
-### Commit Message Convention
+## 📖 Documentation
 
-Follow the Conventional Commits specification:
+### CLI Architecture
 
+```mermaid
+graph TD
+A[CLI Entry] --> B{Parse Options}
+B --> C[Interactive Mode]
+B --> D[Direct Mode]
+C --> E[File Scanner]
+D --> E
+E --> F[Code Analyzer]
+F --> G[README Generator]
+G --> H{Existing README?}
+H -->|Yes| I[Merge Content]
+H -->|No| J[Write New File]
 ```
-feat: Add new feature
-fix: Fix bug
-docs: Update documentation
-style: Format code
-refactor: Refactor code
-test: Add tests
-chore: Update build tasks
-```
 
-### Pull Request Process
+### Features
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to your fork
-5. Open a Pull Request
-6. Wait for review and address feedback
+- AI-powered code analysis
+- Automatic generation of detailed README.md files
+- Support for code structure detection and dependency parsing
+- Integration with Mermaid for diagram generation
+- Customizable templates
 
-### Bug Reports
 
-- Use the issue tracker
-- Include reproduction steps
-- Include system information
-- Include relevant logs
 
-### Feature Requests
+### Dependencies
 
-- Use the issue tracker
-- Describe the feature in detail
-- Explain the use case
-- Provide examples if possible
+**Runtime:**
+
+- [@google/generative-ai](https://www.npmjs.com/package/@google/generative-ai)
+- [commander](https://www.npmjs.com/package/commander)
+- [dotenv](https://www.npmjs.com/package/dotenv)
+- [fast-glob](https://www.npmjs.com/package/fast-glob)
+- [ora](https://www.npmjs.com/package/ora)
+- [chalk](https://www.npmjs.com/package/chalk)
+- [mermaid](https://www.npmjs.com/package/mermaid)
+- [badge-maker](https://www.npmjs.com/package/badge-maker)
+
+### Contributing
+-Fork the repo
+-Create a new branch
+-Make your changes
+-Commit your changes
+-Push your changes
+-Create a pull request
+
+Contributions are welcome! Please read the [contributing guidelines](https://github.com/your-org/gen-readme/blob/main/CONTRIBUTING.md) before submitting a pull request.
+
+**Development:**
+
+- [esbuild](https://www.npmjs.com/package/esbuild)
+- [jest](https://www.npmjs.com/package/jest)
+
+### License
+
+MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+- Google Gemini for AI capabilities
+- Osei Ansah
+- Expo Ghana Community
+- Samuel Agbenyo
+- All our [contributors](https://github.com/your-org/gen-readme/graphs/contributors)
+
+<div align="center">
+
+Made with ❤️ by [@Okenneth1964](https://github.com/Okenneth1964)
+
+</div>
+Package Sidebar
