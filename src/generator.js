@@ -3,10 +3,12 @@ import path from 'path';
 import { logger } from './utils/logger.js';
 import { generateBadges } from './utils/templates.js';
 import { CONFIG } from './utils/config.js';
+import { GitHubService } from './services/GitHubService.js';
 
 export async function generateReadme(analysis, options) {
   const readmePath = 'README.md';
   let content;
+  let files = [];
 
   try {
     const exists = await fileExists(readmePath);
@@ -22,16 +24,29 @@ export async function generateReadme(analysis, options) {
       content = await mergeReadme(existingContent, content);
     }
 
-    await fs.writeFile(readmePath, content, 'utf-8');
+    files.push({ path: readmePath, content });
 
     if (options.addContributing) {
-      await generateContributionDocs(analysis.projectInfo);
+      const contribFiles = await generateContributionDocs(analysis.projectInfo);
+      files = files.concat(contribFiles);
+    }
+
+    // Always write files locally first
+    for (const file of files) {
+      await fs.writeFile(file.path, file.content, 'utf-8');
+    }
+
+    // Then create PR if GitHub option is enabled
+    if (CONFIG.options.github?.createPR) {
+      const github = new GitHubService();
+      await github.createPullRequest(files);
     }
 
   } catch (error) {
     throw new Error(`Failed to generate documentation: ${error.message}`);
   }
 }
+
 async function fileExists(filePath) {
   try {
     await fs.access(filePath);
@@ -101,138 +116,59 @@ function parseSections(content) {
 
 // Add new function to generate contribution docs
 export async function generateContributionDocs(projectInfo = {}) {
-  const contributingPath = 'CONTRIBUTING.md';
-  const codeOfConductPath = 'CODE_OF_CONDUCT.md';
-  
-  const contributingContent = `# Contributing to ${projectInfo.name || 'the project'}
+  const contributingContent = `# Contributing to ${projectInfo.name || 'this project'}
 
-## 🌟 Welcome!
+## Development Setup
+\`\`\`bash
+# Clone the repository
+git clone [repository-url]
+cd ${projectInfo.name || 'project'}
 
-Thank you for considering contributing to ${projectInfo.name || 'our project'}! This document provides guidelines and steps for contributing.
+# Install dependencies
+npm install
 
-## 📋 Table of Contents
+# Run tests
+npm test
 
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Process](#development-process)
-- [Pull Request Guidelines](#pull-request-guidelines)
-- [Community](#community)
+# Start development server
+npm run dev
+\`\`\`
 
-## 📜 Code of Conduct
+## Code Style Guidelines
+- Use ESLint and Prettier for code formatting
+- Follow JavaScript Standard Style
+- Use meaningful variable and function names
+- Add JSDoc comments for functions
+- Keep functions small and focused
 
-This project follows our [Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+## Commit Message Convention
+Follow the Conventional Commits specification:
+\`\`\`
+feat: Add new feature
+fix: Fix bug
+docs: Update documentation
+style: Format code
+refactor: Refactor code
+test: Add tests
+chore: Update build tasks
+\`\`\`
 
-## 🚀 Getting Started
-
+## Pull Request Process
 1. Fork the repository
-2. Clone your fork:
-   \`\`\`bash
-   git clone https://github.com/your-username/${projectInfo.name}.git
-   cd ${projectInfo.name}
-   \`\`\`
-3. Install dependencies:
-   \`\`\`bash
-   npm install
-   \`\`\`
-4. Create a branch:
-   \`\`\`bash
-   git checkout -b feature/amazing-feature
-   \`\`\`
+2. Create a feature branch
+3. Commit your changes
+4. Push to your fork
+5. Open a Pull Request
+6. Wait for review and address feedback`;
 
-## 💻 Development Process
+  return [
+    {
+      path: 'CONTRIBUTING.md',
+      content: contributingContent
+    }
+  ];
+}
 
-1. Write your code following our style guidelines
-2. Add or update tests as needed
-3. Update documentation
-4. Run tests locally:
-   \`\`\`bash
-   npm test
-   \`\`\`
-5. Commit your changes:
-   \`\`\`bash
-   git commit -m "feat: Add amazing feature"
-   \`\`\`
-
-## 🔍 Pull Request Guidelines
-
-1. Update the README.md with details of changes if needed
-2. Update the CHANGELOG.md following semantic versioning
-3. The PR should work for all supported Node.js versions
-4. Include screenshots for UI changes
-5. Include tests for new functionality
-
-## 👥 Community
-
-- Join our [Discord server](https://discord.gg/your-server)
-- Follow us on [Twitter](https://twitter.com/your-handle)
-- Read our [blog](https://your-blog.com)
-
-## 🎯 Where to Contribute
-
-- Check our [issue tracker](https://github.com/owner/${projectInfo.name}/issues)
-- Look for \`good first issue\` labels
-- Improve documentation
-- Add tests
-- Fix bugs
-- Implement requested features
-
-## 🏆 Recognition
-
-Contributors will be:
-- Listed in our README
-- Mentioned in release notes
-- Given credit in documentation
-
-Thank you for contributing! 🙏
-`;
-
-  const codeOfConductContent = `# Code of Conduct
-
-## Our Pledge
-
-We as members, contributors, and leaders pledge to make participation in our
-community a harassment-free experience for everyone.
-
-## Our Standards
-
-Examples of behavior that contributes to a positive environment:
-
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
-
-## Enforcement Responsibilities
-
-Project maintainers are responsible for clarifying and enforcing our standards of
-acceptable behavior and will take appropriate and fair corrective action in
-response to any behavior that they deem inappropriate.
-
-## Scope
-
-This Code of Conduct applies within all community spaces, and also applies when
-an individual is officially representing the community in public spaces.
-
-## Enforcement
-
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
-[INSERT CONTACT METHOD].
-
-## Attribution
-
-This Code of Conduct is adapted from the [Contributor Covenant][homepage],
-version 2.0, available at
-https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
-`;
-
-  try {
-    await fs.writeFile(contributingPath, contributingContent, 'utf-8');
-    await fs.writeFile(codeOfConductPath, codeOfConductContent, 'utf-8');
-    logger.success('Generated contribution documentation');
-    return true;
-  } catch (error) {
-    throw new Error(`Failed to generate contribution documentation: ${error.message}`);
-  }
+function generateCodeOfConductContent() {
+  // Implementation of generateCodeOfConductContent
 } 

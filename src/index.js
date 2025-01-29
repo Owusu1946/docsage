@@ -54,6 +54,33 @@ Examples:
         apiKey = apiKeyResponse.apiKey;
       }
   
+      let githubToken = process.env.GITHUB_TOKEN;
+      if (!githubToken) {
+        const tokenResponse = await inquirer.prompt([
+          {
+            type: 'input',
+            name: 'token',
+            message: '🔑 Enter your GitHub token (optional, for PR creation):',
+            transformer: (input) => input ? '*'.repeat(input.length) : ''
+          },
+          {
+            type: 'confirm',
+            name: 'createPR',
+            message: '🔄 Create a pull request with the changes?',
+            default: false,
+            when: (answers) => !!answers.token
+          }
+        ]);
+        
+        if (tokenResponse.token) {
+          githubToken = tokenResponse.token;
+          CONFIG.options.github = {
+            createPR: tokenResponse.createPR,
+            token: githubToken
+          };
+        }
+      }
+  
       let codebasePath = options.codebase;
       let force = options.force;
       let merge = options.merge;
