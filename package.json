@@ -1,6 +1,6 @@
 {
   "name": "docsage",
-  "version": "1.7.1",
+  "version": "1.7.3",
   "description": "AI-powered documentation generator using with Pull Request Agent Feature",
   "main": "dist/index.js",
   "bin": {
@@ -33,12 +33,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Owusu1964/docsage.git"
+    "url": "git+https://github.com/Owusu1946/docsage.git"
   },
   "bugs": {
-    "url": "https://github.com/Owusu1964/docsage/issues"
+    "url": "https://github.com/Owusu1946/docsage/issues"
   },
-  "homepage": "https://github.com/Owusu1964/docsage#readme",
+  "homepage": "https://github.com/Owusu1946/docsage#readme",
   "keywords": [
     "readme",
     "generator",

@@ -19,8 +19,11 @@ program
   .option('-i, --interactive', 'Run in interactive mode')
   .option('-f, --force', 'Force overwrite existing README')
   .option('-m, --merge', 'Merge with existing README')
-  .option('-t, --template <type>', 'Documentation template (minimal, detailed, api)', 'detailed')
+  .option('-t, --template <type>', 'Documentation template (minimal, standard, enterprise)', 'standard')
   .option('-s, --style <style>', 'Badge style (flat, plastic, social)', 'flat')
+  .option('--screenshots', 'Generate usage screenshots')
+  .option('--api-docs', 'Generate API documentation')
+  .option('--dep-graph', 'Include dependency graph')
   .addHelpText('after', `
 Examples:
   $ docsage                    # Generate README for current directory
@@ -88,6 +91,17 @@ Examples:
       if (options.interactive) {
         const answers = await inquirer.prompt([
           {
+            type: 'list',
+            name: 'template',
+            message: '📋 Select a documentation template:',
+            choices: [
+              { name: 'Minimal - Basic project information', value: 'minimal' },
+              { name: 'Standard - Comprehensive documentation (recommended)', value: 'standard' },
+              { name: 'Enterprise - Full technical documentation', value: 'enterprise' }
+            ],
+            default: 'standard'
+          },
+          {
             type: 'input',
             name: 'codebase',
             message: '📁 Enter the path to your codebase:',
@@ -107,6 +121,7 @@ Examples:
             when: (answers) => !answers.force,
           },
         ]);
+        options.template = answers.template;
         codebasePath = answers.codebase;
         force = answers.force;
         merge = answers.merge;

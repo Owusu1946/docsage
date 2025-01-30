@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { logger } from './utils/logger.js';
-import { generateBadges } from './utils/templates.js';
+import { generateBadges, getTemplate } from './utils/templates.js';
 import { CONFIG } from './utils/config.js';
 import { GitHubService } from './services/GitHubService.js';
 
@@ -11,17 +11,18 @@ export async function generateReadme(analysis, options) {
   let files = [];
 
   try {
+    const template = getTemplate(options.template);
     const exists = await fileExists(readmePath);
     
     if (exists && !options.force && !options.merge) {
       throw new Error('README.md already exists. Use --force to overwrite or --merge to merge.');
     }
 
-    content = await formatReadmeContent(analysis);
+    content = await formatReadmeContent(analysis, template);
 
     if (options.merge && exists) {
       const existingContent = await fs.readFile(readmePath, 'utf-8');
-      content = await mergeReadme(existingContent, content);
+      content = await mergeReadme(existingContent, content, template);
     }
 
     files.push({ path: readmePath, content });
@@ -56,23 +57,24 @@ async function fileExists(filePath) {
   }
 }
 
-async function formatReadmeContent(analysis) {
-  // Add null check for analysis.projectInfo
+async function formatReadmeContent(analysis, template) {
   const projectInfo = analysis.projectInfo || {};
-  const badges = await generateBadges(projectInfo);
+  const badges = template.badges ? await generateBadges(projectInfo, template.badges) : '';
   
-  // Add badges below the title
-  const lines = analysis.analysis.split('\n');
-  const titleIndex = lines.findIndex(line => line.startsWith('# '));
+  let content = analysis.analysis;
   
-  if (titleIndex !== -1) {
-    lines.splice(titleIndex + 1, 0, '', badges, '');
+  // Filter sections based on template
+  content = filterSections(content, template.sections);
+  
+  // Add emojis if enabled
+  if (template.emoji) {
+    content = addEmojis(content);
   }
-
-  return lines.join('\n');
+  
+  return content;
 }
 
-async function mergeReadme(existing, generated) {
+async function mergeReadme(existing, generated, template) {
   const sections = {
     existing: parseSections(existing),
     generated: parseSections(generated)

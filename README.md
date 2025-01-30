@@ -151,7 +151,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-Made with ❤️ by [@Okenneth1964](https://github.com/Okenneth1964)
+Made with ❤️ by [@Okenneth1946](https://github.com/Okenneth1946)
 
 </div>
 Package Sidebar
