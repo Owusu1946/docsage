@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import 'dotenv/config';
 
 import { Command } from 'commander';
 import inquirer from 'inquirer';
@@ -17,8 +18,6 @@ program
   .version('1.2.1')
   .option('-c, --codebase [path]', 'Path to codebase', '.')
   .option('-i, --interactive', 'Run in interactive mode')
-  .option('-f, --force', 'Force overwrite existing README')
-  .option('-m, --merge', 'Merge with existing README')
   .option('-t, --template <type>', 'Documentation template (minimal, standard, enterprise)', 'standard')
   .option('-s, --style <style>', 'Badge style (flat, plastic, social)', 'flat')
   .option('--screenshots', 'Generate usage screenshots')
@@ -29,13 +28,11 @@ Examples:
   $ docsage                    # Generate README for current directory
   $ docsage --codebase ./path  # Generate README for specific path
   $ docsage -i                # Interactive mode
-  $ docsage --force           # Overwrite existing README
-  $ docsage --merge           # Merge with existing README
   `)
   .action(async (options) => {
     try {
       await ui.showWelcome();
-  
+
       // Get API key from env or prompt
       let apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
@@ -56,7 +53,7 @@ Examples:
         ]);
         apiKey = apiKeyResponse.apiKey;
       }
-  
+
       let githubToken = process.env.GITHUB_TOKEN;
       if (!githubToken) {
         const tokenResponse = await inquirer.prompt([
@@ -74,7 +71,7 @@ Examples:
             when: (answers) => !!answers.token
           }
         ]);
-        
+
         if (tokenResponse.token) {
           githubToken = tokenResponse.token;
           CONFIG.options.github = {
@@ -83,11 +80,9 @@ Examples:
           };
         }
       }
-  
+
       let codebasePath = options.codebase;
-      let force = options.force;
-      let merge = options.merge;
-  
+
       if (options.interactive) {
         const answers = await inquirer.prompt([
           {
@@ -107,29 +102,14 @@ Examples:
             message: '📁 Enter the path to your codebase:',
             default: '.',
           },
-          {
-            type: 'confirm',
-            name: 'force',
-            message: '⚠️  Overwrite existing README if it exists?',
-            default: false,
-          },
-          {
-            type: 'confirm',
-            name: 'merge',
-            message: '🔄 Merge with existing README if it exists?',
-            default: true,
-            when: (answers) => !answers.force,
-          },
         ]);
         options.template = answers.template;
         codebasePath = answers.codebase;
-        force = answers.force;
-        merge = answers.merge;
       }
-  
+
       const spinner = ui.createSpinner('🔍 Scanning codebase...');
       const files = await scanFiles(codebasePath);
-      
+
       if (files.length === 0) {
         spinner.fail('No relevant files found in codebase');
         process.exit(1);
@@ -144,14 +124,13 @@ Examples:
       spinner.update('🤖 Analyzing code...');
       const analysis = await analyzeCodebase(files, apiKey);
 
-      spinner.update('📝 Generating README...');
+      // Stop spinner before interactive phase
+      spinner.succeed('Analysis complete!');
+
       await generateReadme(analysis, {
-        force: options.force || force,
-        merge: options.merge || merge,
+        template: options.template,
         addContributing: true // Always generate contribution docs
       });
-
-      spinner.succeed('Documentation generated successfully!');
 
       // Ask about contribution docs
       const { generateContrib } = await inquirer.prompt([
@@ -173,7 +152,7 @@ Examples:
           throw error;
         }
       }
-      
+
       ui.showSuccess(
         '🎉 Documentation has been generated!\n\n' +
         `📊 Stats:\n` +
@@ -188,4 +167,4 @@ Examples:
       process.exit(1);
     }
   });
-program.parse(); 
+program.parse();

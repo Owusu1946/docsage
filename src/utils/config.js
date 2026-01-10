@@ -1,5 +1,5 @@
 export const CONFIG = {
-  MODEL_NAME: 'gemini-pro',
+  MODEL_NAME: 'gemini-2.5-flash',
   MAX_RETRIES: 3,
   MAX_FILES: 100,
   CONTENT_TRUNCATE_LENGTH: 10000,

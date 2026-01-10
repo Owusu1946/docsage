@@ -1,9 +1,16 @@
 import fs from 'fs/promises';
 import path from 'path';
+import inquirer from 'inquirer';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 import { logger } from './utils/logger.js';
 import { generateBadges, getTemplate } from './utils/templates.js';
+import { filterSections, addEmojis, openFile } from './utils/helpers.js';
+import { generateCompactDiff } from './utils/diff.js';
 import { CONFIG } from './utils/config.js';
 import { GitHubService } from './services/GitHubService.js';
+
+const execAsync = promisify(exec);
 
 export async function generateReadme(analysis, options) {
   const readmePath = 'README.md';
@@ -13,16 +20,85 @@ export async function generateReadme(analysis, options) {
   try {
     const template = getTemplate(options.template);
     const exists = await fileExists(readmePath);
-    
-    if (exists && !options.force && !options.merge) {
-      throw new Error('README.md already exists. Use --force to overwrite or --merge to merge.');
-    }
 
+    // Generate initial content
     content = await formatReadmeContent(analysis, template);
 
-    if (options.merge && exists) {
+    // If file exists, we handle the smart merge and diff
+    if (exists) {
       const existingContent = await fs.readFile(readmePath, 'utf-8');
-      content = await mergeReadme(existingContent, content, template);
+
+      // Perform smart merge (preserve manual sections)
+      const mergedContent = await mergeReadme(existingContent, content, template);
+
+      // Calculate diff between Existing and Merged
+      logger.info('Calculating changes...');
+      const diff = generateCompactDiff(existingContent, mergedContent);
+
+      if (diff.trim()) {
+        console.log('\nProposed Changes (Compact View):');
+        console.log(diff);
+        console.log('\n');
+
+        // Ask for confirmation loop
+        while (true) {
+          const { action } = await inquirer.prompt([
+            {
+              type: 'list',
+              name: 'action',
+              message: 'How would you like to proceed?',
+              choices: [
+                { name: '👀 View Diff in Editor (VS Code)', value: 'view_diff' },
+                { name: '✅ Apply changes (Smart Merge)', value: 'apply' },
+                { name: '❌ Cancel', value: 'cancel' }
+              ],
+              default: 'view_diff'
+            }
+          ]);
+
+          if (action === 'view_diff') {
+            const conflictContent = createConflictContent(existingContent, mergedContent);
+            const tempFile = '.README.diff.md';
+
+            await fs.writeFile(tempFile, conflictContent, 'utf-8');
+            try {
+              logger.info('Opening diff with conflict markers...');
+              await openFile(tempFile);
+
+              await inquirer.prompt([{
+                type: 'input',
+                name: 'continue',
+                message: 'Press Enter after you have reviewed the diff to continue...'
+              }]);
+            } catch (e) {
+              logger.warn('Failed to open file automatically.');
+              logger.info(`You can manually open "${tempFile}" to view changes.`);
+
+              await inquirer.prompt([{
+                type: 'input',
+                name: 'continue',
+                message: 'Press Enter to continue...'
+              }]);
+            }
+            // Loop continues to let user decide after viewing
+            // Cleanup temp file after viewing? Maybe keep it until they decide.
+            try { await fs.unlink(tempFile); } catch { }
+            // Loop continues to let user decide after viewing
+          } else if (action === 'cancel') {
+            logger.warn('Operation cancelled by user.');
+            try { await fs.unlink('.README.new.md'); } catch { }
+            return;
+          } else {
+            // Apply changes
+            content = mergedContent;
+            try { await fs.unlink('.README.new.md'); } catch { }
+            break;
+          }
+        }
+      } else {
+        logger.info('No changes detected after merge.');
+        return;
+      }
     }
 
     files.push({ path: readmePath, content });
@@ -60,17 +136,17 @@ async function fileExists(filePath) {
 async function formatReadmeContent(analysis, template) {
   const projectInfo = analysis.projectInfo || {};
   const badges = template.badges ? await generateBadges(projectInfo, template.badges) : '';
-  
+
   let content = analysis.analysis;
-  
+
   // Filter sections based on template
   content = filterSections(content, template.sections);
-  
+
   // Add emojis if enabled
   if (template.emoji) {
     content = addEmojis(content);
   }
-  
+
   return content;
 }
 
@@ -171,6 +247,51 @@ chore: Update build tasks
   ];
 }
 
-function generateCodeOfConductContent() {
-  // Implementation of generateCodeOfConductContent
-} 
+function createConflictContent(existing, generated) {
+  const existingSections = parseSections(existing);
+  const generatedSections = parseSections(generated);
+
+  const allHeaders = new Set([
+    ...Object.keys(existingSections),
+    ...Object.keys(generatedSections)
+  ]);
+
+  let conflictOutput = '';
+
+  // Helper to normalize content for comparison (trim whitespace)
+  const normalize = (str) => str ? str.trim() : '';
+
+  allHeaders.forEach(header => {
+    const oldContent = existingSections[header];
+    const newContent = generatedSections[header];
+
+    if (!oldContent && newContent) {
+      // New section
+      conflictOutput += `<<<<<<< Existing
+=======
+${newContent}
+>>>>>>> Generated
+\n`;
+    } else if (oldContent && !newContent) {
+      // Removed section
+      conflictOutput += `<<<<<<< Existing
+${oldContent}
+=======
+>>>>>>> Generated
+\n`;
+    } else if (normalize(oldContent) !== normalize(newContent)) {
+      // Modified section
+      conflictOutput += `<<<<<<< Existing
+${oldContent}
+=======
+${newContent}
+>>>>>>> Generated
+\n`;
+    } else {
+      // Unchanged
+      conflictOutput += oldContent + '\n\n';
+    }
+  });
+
+  return conflictOutput;
+}

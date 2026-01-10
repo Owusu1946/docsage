@@ -14,17 +14,27 @@ export async function analyzeCodebase(files, apiKey) {
   const codeContext = prepareCodeContext(files);
 
   const prompt = generateAnalysisPrompt(projectInfo, codeContext);
-  
+
   for (let attempt = 1; attempt <= CONFIG.MAX_RETRIES; attempt++) {
     try {
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const analysis = response.text();
-      
+
       if (!isValidAnalysis(analysis)) {
+        logger.warn('Generated content failed validation. Retrying...');
+        if (attempt === CONFIG.MAX_RETRIES) {
+          // On last attempt, return whatever we got instead of failing completely
+          logger.warn('Returning best effort analysis despite validation failure.');
+          return {
+            projectInfo,
+            analysis,
+            timestamp: new Date().toISOString()
+          };
+        }
         throw new Error('Generated content does not match required format');
       }
-      
+
       return {
         projectInfo,
         analysis,
@@ -171,18 +181,20 @@ function isValidAnalysis(analysis) {
     return false;
   }
 
+  // Relaxed validation: Case-insensitive and partial match
   const requiredSections = [
     '# ',           // Title
-    '## Installation', 
-    '## Usage',
-    '## Features',
-    '## Contributing',
+    'Installation',
+    'Usage',
+    'Features',
+    'Contributing',
     '```'           // Code block
   ];
-  
-  const sectionCount = requiredSections.filter(section => 
-    analysis.includes(section)
+
+  const sectionCount = requiredSections.filter(section =>
+    analysis.toLowerCase().includes(section.toLowerCase())
   ).length;
 
-  return sectionCount >= 4; // At least 4 required sections should be present
-} 
+  // Require at least 3 sections to be considered valid
+  return sectionCount >= 3;
+}

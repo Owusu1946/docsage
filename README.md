@@ -1,157 +1,61 @@
-<div align="center">
+Project Description 📝
 
-# 🚀 docsage
+DocSage aims to simplify and automate the tedious process of writing and maintaining project documentation. Leveraging the power of AI (specifically Google's Generative AI), it can analyze your source code, understand its structure, purpose, and dependencies, and then generate high-quality documentation.
 
-[![Version](https://img.shields.io/badge/version-1.7.1-blue.svg)](https://www.npmjs.com/package/docsage)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D16-brightgreen.svg)](https://nodejs.org)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
-[![npm](https://img.shields.io/npm/v/docsage)](https://www.npmjs.com/package/docsage)
+Beyond static generation, DocSage introduces a "Pull Request Agent" that can integrate directly into your GitHub repository. This agent can automatically review code changes in PRs, suggest documentation updates, or even generate new documentation snippets, making sure your project's documentation evolves alongside its code.
+
+---
 
 
-> AI-powered README generator
+Key Features ✨
+
+*   **🧠 AI-Powered Documentation Generation**:
+    *   Utilizes advanced AI models (`@google/generative-ai`) to understand code context and generate human-readable documentation.
+    *   Supports various code languages (inferred from analysis capabilities).
+*   **🚀 Pull Request Agent Feature**:
+    *   Integrates with GitHub (`@octokit/rest`) to act as a documentation agent for pull requests.
+    *   Automatically analyzes code changes within a PR and suggests or generates documentation updates.
+    *   Helps maintain documentation consistency and quality throughout the development lifecycle.
+*   **🔍 Comprehensive Code Analysis**:
+    *   Scans and analyzes code files (`src/scanner.js`, `src/analyzer.js`) to extract relevant information such as functions, classes, dependencies, and overall structure.
+    *   Identifies new, modified, or deleted code to focus documentation efforts.
+*   **🔗 Dependency Graph Visualization**:
+    *   Generates `Mermaid` diagrams (`mermaid`, `src/services/depGraph.js`) to visually represent code dependencies, making complex systems easier to understand.
+*   **🛠️ Customizable Templates**:
+    *   Allows users to define and use custom templates (`src/services/templates.js`, `src/utils/templates.js`) for documentation output, ensuring brand consistency and specific formatting requirements.
+*   **⚡ Interactive CLI Experience**:
+    *   Provides a user-friendly command-line interface (`commander`, `inquirer`) with spinners (`nanospinner`, `ora`), progress bars (`cli-progress`), and colorful output (`chalk`, `gradient-string`, `figlet`, `boxen`) for a pleasant user experience.
+*   **⚙️ Flexible Configuration**:
+    *   Supports configuration files (`src/utils/config.js`) and environment variables (`.env.example`) for easy setup and customization of AI keys, GitHub tokens, and output preferences.
+*   **🔄 Intelligent Diffing**:
+    *   Uses a robust diffing algorithm (`diff`, `src/utils/diff.js`) to precisely identify changes between code versions, crucial for focused documentation updates.
+
+---
 
 
-[Key Features](#-key-features) •
-[Installation](#-installation) •
-[Usage](#-Usage) •
-[Documentation](#-documentation) •
-[Contributing](#-Contributing)
+Installation 🚀
 
-</div>
-
-## ✨ Key Features
-
-- 🤖 **AI-Powered Analysis** - Leverages Google's Gemini model for intelligent code analysis
-- 📝 **Smart Generation** - Creates comprehensive README files with all essential sections
-- 🔍 **Code Structure Detection** - Automatically detects and documents project structure
-- 📊 **Dependency Analysis** - Parses and categorizes project dependencies
-- 📈 **Mermaid Diagrams** - Generates architecture and flow diagrams automatically
-- 🎨 **Beautiful CLI** - Interactive command-line interface with colorful output
-- 🔄 **Merge Support** - Smart merging with existing README files
-- ⚡ **Fast & Efficient** - Optimized file scanning and processing
-- 🔃 **GitHub Integration** - Create pull requests automatically with generated docs
-- 🔐 **Secure** - Environment-based configuration for sensitive tokens
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js >= 16
-- npm or yarn
-- Google Gemini API key
-
-### 📥 Installation
+To get started with DocSage, first ensure you have Node.js (version 16 or higher is recommended) installed on your system.
 
 ```bash
+
+Install DocSage globally (recommended for CLI usage)
 npm install -g docsage
 ```
 
-### Usage
 
-```bash
-docsage [path]
-```
+Usage 🚀
 
-**Example:**
-
-```bash
-docsage ./my-project
-```
-
-or
-
-```bash
-docsage # This will scan the current directory
-```
-
-### Interactive Mode
-
-```bash
-docsage -i
-```
-
-### Advanced Options
-
-| Option | Description |
-|--------|-------------|
-| `-c, --codebase` | Specify codebase path |
-| `-f, --force` | Force overwrite existing README |
-| `-m, --merge` | Merge with existing README |
-| `-i, --interactive` | Interactive mode |
-
-## 📖 Documentation
-
-### CLI Architecture
-
-```mermaid
-graph TD
-A[CLI Entry] --> B{Parse Options}
-B --> C[Interactive Mode]
-B --> D[Direct Mode]
-C --> E[File Scanner]
-D --> E
-E --> F[Code Analyzer]
-F --> G[README Generator]
-G --> H{Existing README?}
-H -->|Yes| I[Merge Content]
-H -->|No| J[Write New File]
-```
-
-### Features
-
-- AI-powered code analysis
-- Automatic generation of detailed README.md files
-- Support for code structure detection and dependency parsing
-- Integration with Mermaid for diagram generation
-- Customizable templates
+DocSage is primarily a CLI tool. Here are some common use cases:
 
 
+Contributing 🤝
 
-### Dependencies
+We welcome contributions to DocSage! Whether it's reporting a bug, suggesting a new feature, or submitting code, your help is valuable.
 
-**Runtime:**
 
-- [@google/generative-ai](https://www.npmjs.com/package/@google/generative-ai)
-- [commander](https://www.npmjs.com/package/commander)
-- [dotenv](https://www.npmjs.com/package/dotenv)
-- [fast-glob](https://www.npmjs.com/package/fast-glob)
-- [ora](https://www.npmjs.com/package/ora)
-- [chalk](https://www.npmjs.com/package/chalk)
-- [mermaid](https://www.npmjs.com/package/mermaid)
-- [badge-maker](https://www.npmjs.com/package/badge-maker)
+License 📄
 
-### Contributing
--Fork the repo
--Create a new branch
--Make your changes
--Commit your changes
--Push your changes
--Create a pull request
+DocSage is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.
 
-Contributions are welcome! Please read the [contributing guidelines](https://github.com/your-org/gen-readme/blob/main/CONTRIBUTING.md) before submitting a pull request.
-
-**Development:**
-
-- [esbuild](https://www.npmjs.com/package/esbuild)
-- [jest](https://www.npmjs.com/package/jest)
-
-### License
-
-MIT
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-- Google Gemini for AI capabilities
-- [Osei Ansah](https://github.com/PapaDaCodr)
-- [Expo Ghana Community](https://github.com/Sonnysam)
-- [Samuel Agbenyo](https://github.com/Sonnysam)
-- All our [contributors](https://github.com/your-org/gen-readme/graphs/contributors)
-
-<div align="center">
-
-Made with ❤️ by [@Okenneth1946](https://github.com/Okenneth1946)
-
-</div>
-Package Sidebar
+---
